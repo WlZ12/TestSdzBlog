@@ -1,0 +1,3 @@
+services:
+    sdz_blog.antispam:
+        class: Sdz\BlogBundle\Antispam\SdzAntispam
