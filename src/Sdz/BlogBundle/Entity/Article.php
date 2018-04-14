@@ -2,7 +2,10 @@
 
 namespace Sdz\BlogBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Sdz\BlogBundle\Entity\Categorie;
+use Sdz\BlogBundle\Entity\Commentaire;
 
 /**
  * Article
@@ -12,6 +15,21 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Article
 {
+    /**
+     * @ORM\OneToOne(targetEntity="Sdz\BlogBundle\Entity\Image",cascade={"persist"})
+     */
+    private $image;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Sdz\BlogBundle\Entity\Categorie",cascade={"persist"})
+     */
+
+    private $categories;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Sdz\BlogBundle\Entity\Commentaire", mappedBy="article")
+     */
+    private $commentaires;
     /**
      * @var int
      *
@@ -58,6 +76,7 @@ class Article
 
     public function __construct()
     {
+        $this->categories = new ArrayCollection();
         $this->date = new \DateTime();
         $this->publication = true;
     }
@@ -185,5 +204,104 @@ class Article
     public function getPublication()
     {
         return $this->publication;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param mixed $image
+     */
+    public function setImage(Image $image = null): void
+    {
+        $this->image = $image;
+    }
+
+    /**
+     * Remove la catégorie en parametre de la liste
+     * @param Categorie $categorie
+     */
+    public function removeCategorie (Categorie $categorie)
+    {
+        $this->categories->remove($categorie);
+    }
+
+    /**
+     * Ajoute une catégorie à la liste
+     * @param Categorie $categorie
+     */
+    public function addCategorie(Categorie $categorie)
+    {
+        $this->categories->add($categorie);
+    }
+
+    /**
+     *  Get the value of categorie
+     * @return ArrayCollection
+     */
+    public function getCategories ()
+    {
+        return $this->categories;
+    }
+
+    /**
+     * Add categories
+     *
+     * @param Categorie $categories
+     * @return Article
+     */
+    public function addCategory(Categorie $categories)
+    {
+        $this->categories[] = $categories;
+
+        return $this;
+    }
+
+    /**
+     * Remove categories
+     *
+     * @param Categorie $categories
+     */
+    public function removeCategory(Categorie $categories)
+    {
+        $this->categories->removeElement($categories);
+    }
+
+    /**
+     * Add commentaires
+     *
+     * @param Commentaire $commentaires
+     * @return Article
+     */
+    public function addCommentaire(Commentaire $commentaires)
+    {
+        $this->commentaires[] = $commentaires;
+        $commentaires->setArticle($this);
+        return $this;
+    }
+
+    /**
+     * Remove commentaires
+     *
+     * @param Commentaire $commentaires
+     */
+    public function removeCommentaire(Commentaire $commentaires)
+    {
+        $this->commentaires->removeElement($commentaires);
+    }
+
+    /**
+     * Get commentaires
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCommentaires()
+    {
+        return $this->commentaires;
     }
 }

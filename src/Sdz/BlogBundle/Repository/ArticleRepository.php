@@ -12,4 +12,18 @@ use Doctrine\ORM\EntityRepository;
  */
 class ArticleRepository extends EntityRepository
 {
+    public function myFindAll()
+    {
+        $queryBuilder = $this->createQueryBuilder('a');
+        $query = $queryBuilder->getQuery();
+        $resultats = $query->getResult();
+        return $resultats;
+    }
+
+    public function myFindOne($id)
+    {
+        $query = $this->createQueryBuilder('a')->where('a.id = :id')->setParameter('id',$id)->getQuery();
+        return $query->getResult();
+
+    }
 }
